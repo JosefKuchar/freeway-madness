@@ -7,6 +7,11 @@ import com.badlogic.gdx.math.Vector2;
 
 public class MyGestureListener implements GestureDetector.GestureListener {
     float x;
+    boolean touching;
+
+    MyGestureListener() {
+        touching = true;
+    }
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
@@ -32,12 +37,14 @@ public class MyGestureListener implements GestureDetector.GestureListener {
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         this.x = x;
+        this.touching = true;
         return true;
     }
 
     @Override
     public boolean panStop(float x, float y, int pointer, int button) {
-        return false;
+        this.touching = false;
+        return true;
     }
 
     @Override
