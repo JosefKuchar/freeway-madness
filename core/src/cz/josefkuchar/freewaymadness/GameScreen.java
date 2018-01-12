@@ -18,13 +18,13 @@ import java.util.ArrayList;
 public class GameScreen implements Screen {
     final FreewayMadness game;
     OrthographicCamera camera;
-    Car car;
     Texture background;
     World world;
     Box2DDebugRenderer debugRenderer;
     Matrix4 debugMatrix;
     BitmapFont font;
     ArrayList<Car> cars;
+    Player player;
 
     public GameScreen(FreewayMadness game) {
         this.game = game;
@@ -34,18 +34,22 @@ public class GameScreen implements Screen {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
-        camera.setToOrtho(false, 128, 128 * (h / w));
+        camera.setToOrtho(false, Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_WIDTH * (h / w));
 
         world = new World(new Vector2(0, 0), true);
 
-        Texture texture = new Texture(Gdx.files.internal("car2.png"));
-        background = new Texture(Gdx.files.internal("road3.png"));
+        Texture texture = new Texture(Gdx.files.internal("car.png"));
+        background = new Texture(Gdx.files.internal("road.png"));
 
         cars = new ArrayList<Car>();
 
-        car = new Car(world, new Sprite(texture), new Vector2(2, 0));
-        cars.add(new Car(world, new Sprite(texture), new Vector2(2f, 3)));
-        car.body.setLinearVelocity(0, 6);
+        cars.add(new Car(world, new Sprite(texture), new Vector2(2, 0)));
+        cars.add(new Car(world, new Sprite(texture), new Vector2(2, 3)));
+
+        player = new Player(cars.get(0));
+        player.car.body.applyLinearImpulse(new Vector2(0,2000), player.car.body.getWorldCenter(), false);
+
+        //car.body.setLinearVelocity(0, 6);
 
         debugRenderer = new Box2DDebugRenderer();
 
@@ -59,17 +63,40 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        // Update physics and HUD
+        update();
+
+        // Clear screen
+        Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        // Update camera
+        camera.update();
+        game.batch.setProjectionMatrix(camera.combined);
 
+        // Debug matrix init
+        debugMatrix = game.batch.getProjectionMatrix().cpy().scale(Constants.PIXELS_TO_METERS, Constants.PIXELS_TO_METERS, 0);
 
+        // Draw scene
+        game.batch.begin();
+        for (int i = closest((int)(camera.position.y - camera.viewportHeight / 2), Constants.TILE_HEIGHT); i < camera.viewportHeight / 2 + camera.position.y; i += Constants.TILE_HEIGHT) {
+            game.batch.draw(background, 0, i);
+        }
+
+        for (Car car: cars) {
+            car.sprite.draw(game.batch);
+        }
+        game.batch.end();
+
+        // Debug render
+        debugRenderer.render(world, debugMatrix);
+    }
+
+    public void update() {
         if (game.gestureListener.touching)
             world.step(1f/60f, 6, 2);
         else
             world.step(1f/480f, 6, 2);
-
-        car.update();
 
         for (Car car: cars) {
             car.update();
@@ -80,25 +107,9 @@ public class GameScreen implements Screen {
             }
         }
 
-        car.body.setTransform(game.gestureListener.x / Gdx.graphics.getWidth() * camera.viewportWidth / Constants.PIXELS_TO_METERS, car.body.getPosition().y, 0);
+        player.steer(game.gestureListener.x / Gdx.graphics.getWidth() * camera.viewportWidth / Constants.PIXELS_TO_METERS);
 
-        camera.position.y = car.sprite.getY() + car.sprite.getHeight() / 2;
-
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
-
-        debugMatrix = game.batch.getProjectionMatrix().cpy().scale(Constants.PIXELS_TO_METERS, Constants.PIXELS_TO_METERS, 0);
-
-        game.batch.begin();
-        for (int i = closest((int)(camera.position.y - camera.viewportHeight / 2), Constants.TILE_HEIGHT); i < camera.viewportHeight / 2 + camera.position.y; i += Constants.TILE_HEIGHT) {
-            game.batch.draw(background, 0, i);
-        }
-        car.sprite.draw(game.batch);
-        for (Car car: cars) {
-            car.sprite.draw(game.batch);
-        }
-        game.batch.end();
-        debugRenderer.render(world, debugMatrix);
+        camera.position.y = player.getCameraPosition();
     }
 
     @Override
