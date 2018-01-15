@@ -11,7 +11,9 @@ public class Car {
     World world;
 
     int health;
+    float maxSpeed;
     float initalDirection;
+    boolean owned;
 
     Car(World world, Sprite sprite, Vector2 position) {
         this.sprite = sprite;
@@ -29,22 +31,27 @@ public class Car {
         body.createFixture(fixtureDef);
         shape.dispose();
         //body.applyForceToCenter(0, 10000, false);
-        body.applyLinearImpulse(new Vector2(0,5000), body.getWorldCenter(), false);
+        //body.applyLinearImpulse(new Vector2(0,5000), body.getWorldCenter(), false);
 
         this.health = 100;
         this.initalDirection = 0;
+        this.maxSpeed = 5;
+
+        body.setLinearVelocity(0, this.maxSpeed);
     }
 
     public void update() {
+        //TODO: Add friction when car is facing by side
+
         // Update sprite according to physics body
         sprite.setPosition(body.getPosition().x * Constants.PIXELS_TO_METERS - sprite.getWidth() / 2, body.getPosition().y * Constants.PIXELS_TO_METERS - sprite.getHeight() / 2);
         sprite.setRotation((float)Math.toDegrees(body.getAngle()));
 
         // Update physics body
         //Gdx.app.log("a", String.valueOf(new Vector2((float)Math.cos(body.getAngle() + Math.PI / 2), (float)Math.sin(body.getAngle() + Math.PI / 2))));
-        Gdx.app.log("a", String.valueOf(body.getAngle()));
+        //Gdx.app.log("a", String.valueOf(body.getAngle()));
 
-        if (calculateSpeed(body.getLinearVelocity()) < 10) {
+        if (calculateSpeed(body.getLinearVelocity()) < this.maxSpeed) {
             //body.applyForce((float)Math.cos(body.getAngle() + Math.PI / 2) * 200, (float)Math.sin(body.getAngle() + Math.PI / 2) * 2000, false);
             Vector2 force = new Vector2((float)Math.cos(body.getAngle() + Math.PI / 2) * 1000, (float)Math.sin(body.getAngle() + Math.PI / 2) * 1000);
             Vector2 point = new Vector2(body.getPosition().x, body.getPosition().y + 0.5f);
