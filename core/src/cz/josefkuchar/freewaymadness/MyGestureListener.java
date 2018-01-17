@@ -7,13 +7,9 @@ import com.badlogic.gdx.math.Vector2;
 
 public class MyGestureListener implements GestureDetector.GestureListener {
     float x;
-    boolean touching;
     float touchDuration;
     Vector2 direction;
-
-    MyGestureListener() {
-        touching = true;
-    }
+    Status status;
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
@@ -38,15 +34,18 @@ public class MyGestureListener implements GestureDetector.GestureListener {
         if (Math.abs(velocityX) > 1000 || Math.abs(velocityY) > 1000) {
             direction = new Vector2(velocityX, velocityY).nor();
             Gdx.app.log("fling", String.valueOf(direction));
+            status = Status.JUMP;
+            return true;
+        } else {
+            return false;
         }
-        return true;
     }
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        if (touchDuration > 200) {
+        if (touchDuration > Constants.FLING_TIME) {
+            status = Status.DRIVE;
             this.x = x;
-            this.touching = true;
             return true;
         } else {
             return false;
@@ -55,7 +54,6 @@ public class MyGestureListener implements GestureDetector.GestureListener {
 
     @Override
     public boolean panStop(float x, float y, int pointer, int button) {
-        this.touching = false;
         return true;
     }
 
@@ -75,7 +73,12 @@ public class MyGestureListener implements GestureDetector.GestureListener {
     public void update() {
         if (Gdx.input.isTouched()) {
             touchDuration += 1000f / 60f;
+            if (touchDuration > Constants.FLING_TIME) {
+                status = Status.DRIVE;
+            }
         } else {
+            if (status != Status.JUMP)
+                status = Status.RELOCATE;
             if (touchDuration != 0f)
                 Gdx.app.log("a", String.valueOf(touchDuration));
             touchDuration = 0;

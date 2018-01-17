@@ -29,6 +29,7 @@ public class Car {
         fixtureDef.shape = shape;
         fixtureDef.density = 1000;
         body.createFixture(fixtureDef);
+        body.setUserData(this);
         shape.dispose();
         //body.applyForceToCenter(0, 10000, false);
         //body.applyLinearImpulse(new Vector2(0,5000), body.getWorldCenter(), false);

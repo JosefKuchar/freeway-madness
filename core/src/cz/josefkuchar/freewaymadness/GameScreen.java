@@ -55,7 +55,7 @@ public class GameScreen implements Screen {
         cars.add(new Car(world, new Sprite(texture), new Vector2(2, 0)));
         cars.add(new Car(world, new Sprite(texture), new Vector2(2, 3)));
 
-        player = new Player(cars.get(0), world);
+        player = new Player(cars.get(0), world, game);
         player.car.body.applyLinearImpulse(new Vector2(0,2000), player.car.body.getWorldCenter(), false);
 
         //car.body.setLinearVelocity(0, 6);
@@ -113,7 +113,7 @@ public class GameScreen implements Screen {
 
         lastCameraPosition = camera.position.y;
 
-        if (game.gestureListener.touching)
+        if (game.gestureListener.status == Status.DRIVE)
             world.step(1f/60f, 6, 2);
         else
             world.step(1f/480f, 6, 2);
@@ -127,8 +127,10 @@ public class GameScreen implements Screen {
             }
         }
 
+
         player.update();
-        player.steer(game.gestureListener.x / Gdx.graphics.getWidth() * camera.viewportWidth / Constants.PIXELS_TO_METERS);
+        if (game.gestureListener.x != -1)
+            player.steer(game.gestureListener.x / Gdx.graphics.getWidth() * camera.viewportWidth / Constants.PIXELS_TO_METERS);
 
         camera.position.y = player.getCameraPosition();
     }

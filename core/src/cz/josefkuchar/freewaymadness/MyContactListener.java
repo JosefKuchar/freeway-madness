@@ -9,6 +9,21 @@ public class MyContactListener implements ContactListener {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
 
+        if (fixtureA.isSensor() || fixtureB.isSensor()) {
+            Car car;
+            Player player;
+
+            if (fixtureB.isSensor()) {
+                car = (Car)fixtureA.getBody().getUserData();
+                player = (Player)fixtureB.getBody().getUserData();
+            } else {
+                car = (Car)fixtureB.getBody().getUserData();
+                player = (Player)fixtureA.getBody().getUserData();
+            }
+
+            player.setCar(car);
+
+        }
         //Gdx.app.log("a", "collision " + fixtureA.isSensor() + " " + fixtureB.isSensor());
     }
 
