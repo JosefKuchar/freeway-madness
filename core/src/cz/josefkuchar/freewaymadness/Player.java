@@ -1,5 +1,6 @@
 package cz.josefkuchar.freewaymadness;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class Player {
@@ -7,6 +8,7 @@ public class Player {
     World world;
     Body body;
     FreewayMadness game;
+    Sprite sprite;
 
     Player(Car car, World world, FreewayMadness game) {
         this.world = world;

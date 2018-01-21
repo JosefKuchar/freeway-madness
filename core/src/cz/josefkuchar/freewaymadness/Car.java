@@ -73,6 +73,12 @@ public class Car {
         body.setTransform(body.getPosition(), body.getAngle() + change);*/
 
         improveAngle();
+
+        if (health >= 0) {
+            sprite.setAlpha(health / 100f);
+        } else {
+            sprite.setAlpha(0);
+        }
     }
 
     private void improveAngle() {

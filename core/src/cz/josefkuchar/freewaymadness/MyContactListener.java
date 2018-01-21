@@ -39,16 +39,25 @@ public class MyContactListener implements ContactListener {
 
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
-        /*
+
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
 
         if (!fixtureA.isSensor() && !fixtureB.isSensor()) {
-
-
+            float strength = 0;
             for (int i = 0; i < impulse.getCount(); i++) {
-                Gdx.app.log(String.valueOf(i), String.valueOf(impulse.getNormalImpulses()[i]));
+
+                strength += impulse.getNormalImpulses()[i];
             }
-        }*/
+            strength /= impulse.getCount();
+            strength /= 100;
+            //Gdx.app.log("a", String.valueOf(strength));
+
+            Car carA = (Car)fixtureA.getBody().getUserData();
+            Car carB = (Car)fixtureB.getBody().getUserData();
+
+            carA.health -= strength;
+            carB.health -= strength;
+        }
     }
 }

@@ -136,6 +136,7 @@ public class GameScreen implements Screen {
         for (int i = cars.size() - 1; i >= 0; i--) {
             Car car = cars.get(i);
             car.update();
+            Gdx.app.log(String.valueOf(i), String.valueOf(car.health));
             if (car.sprite.getY() + car.sprite.getHeight() < camera.position.y - camera.viewportHeight / 2) {
                 car.dispose();
                 cars.remove(i);
