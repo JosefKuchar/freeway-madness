@@ -9,6 +9,7 @@ public class MyContactListener implements ContactListener {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
 
+        // Jump from car to car
         if (fixtureA.isSensor() || fixtureB.isSensor()) {
             Car car;
             Player player;
@@ -24,7 +25,6 @@ public class MyContactListener implements ContactListener {
             player.setCar(car);
 
         }
-        //Gdx.app.log("a", "collision " + fixtureA.isSensor() + " " + fixtureB.isSensor());
     }
 
     @Override
@@ -39,6 +39,16 @@ public class MyContactListener implements ContactListener {
 
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
+        /*
+        Fixture fixtureA = contact.getFixtureA();
+        Fixture fixtureB = contact.getFixtureB();
 
+        if (!fixtureA.isSensor() && !fixtureB.isSensor()) {
+
+
+            for (int i = 0; i < impulse.getCount(); i++) {
+                Gdx.app.log(String.valueOf(i), String.valueOf(impulse.getNormalImpulses()[i]));
+            }
+        }*/
     }
 }

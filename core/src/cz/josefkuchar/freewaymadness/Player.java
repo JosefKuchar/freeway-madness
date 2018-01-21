@@ -34,6 +34,7 @@ public class Player {
     public void setCar(Car car) {
         this.car = car;
         this.car.maxSpeed = 10;
+        this.car.initalAngle = 0;
         game.gestureListener.status = Status.RELOCATE;
         game.gestureListener.x = -1;
     }
@@ -53,6 +54,7 @@ public class Player {
     }
 
     public void steer(float x) {
-        car.body.setTransform(x, car.body.getPosition().y, 0);
+        //car.body.setTransform(x, car.body.getPosition().y, 0);
+        car.steer(x);
     }
 }

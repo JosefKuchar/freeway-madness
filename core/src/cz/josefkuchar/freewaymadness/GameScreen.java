@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import cz.josefkuchar.freewaymadness.Constants;
@@ -32,6 +33,8 @@ public class GameScreen implements Screen {
     float lastCameraPosition;
     float positionBuffer = 0;
 
+    int score = 0;
+
     final int[] spawnPoints = {7, 26, 45, 67, 86, 105};
 
     public GameScreen(FreewayMadness game) {
@@ -52,8 +55,7 @@ public class GameScreen implements Screen {
 
         cars = new ArrayList<Car>();
 
-        cars.add(new Car(world, new Sprite(texture), new Vector2(2, 0)));
-        cars.add(new Car(world, new Sprite(texture), new Vector2(2, 3)));
+        cars.add(new Car(world, new Sprite(texture), new Vector2(2, 0), 0));
 
         player = new Player(cars.get(0), world, game);
         player.car.body.applyLinearImpulse(new Vector2(0,2000), player.car.body.getWorldCenter(), false);
@@ -70,6 +72,16 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
 
+    }
+
+    public void updateCam(float delta, float target) {
+
+        final float speed=delta,ispeed=1.0f-speed;
+        float cameraPosition = camera.position.y;
+        cameraPosition *= ispeed;
+        target *= speed;
+        cameraPosition += target;
+        camera.position.y = cameraPosition;
     }
 
     @Override
@@ -107,7 +119,10 @@ public class GameScreen implements Screen {
         game.gestureListener.update();
         positionBuffer += camera.position.y - lastCameraPosition;
         while (positionBuffer > 200) {
-            cars.add(new Car(world, new Sprite(texture), new Vector2(spawnPoints[random.nextInt(spawnPoints.length)] / Constants.PIXELS_TO_METERS + 0.5f, (camera.position.y + camera.viewportHeight / 2) / Constants.PIXELS_TO_METERS + 1)));
+            int index = random.nextInt(spawnPoints.length);
+            float direction = index > 2 ? 0 : (float)Math.PI;
+
+            cars.add(new Car(world, new Sprite(texture), new Vector2(spawnPoints[index] / Constants.PIXELS_TO_METERS + 0.5f, (camera.position.y + camera.viewportHeight / 2) / Constants.PIXELS_TO_METERS + 1), direction));
             positionBuffer -= 200;
         }
 
@@ -132,7 +147,9 @@ public class GameScreen implements Screen {
         if (game.gestureListener.x != -1)
             player.steer(game.gestureListener.x / Gdx.graphics.getWidth() * camera.viewportWidth / Constants.PIXELS_TO_METERS);
 
-        camera.position.y = player.getCameraPosition();
+        //camera.position.y = player.getCameraPosition();
+
+        updateCam(0.2f, player.getCameraPosition());
     }
 
     @Override

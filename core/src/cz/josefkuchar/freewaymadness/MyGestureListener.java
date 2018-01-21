@@ -13,7 +13,8 @@ public class MyGestureListener implements GestureDetector.GestureListener {
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
-        return false;
+        this.x = x;
+        return true;
     }
 
     @Override
@@ -23,8 +24,7 @@ public class MyGestureListener implements GestureDetector.GestureListener {
 
     @Override
     public boolean longPress(float x, float y) {
-        Gdx.app.log("longpress", "");
-        return true;
+        return false;
     }
 
     @Override
@@ -33,7 +33,6 @@ public class MyGestureListener implements GestureDetector.GestureListener {
 
         if (Math.abs(velocityX) > 1000 || Math.abs(velocityY) > 1000) {
             direction = new Vector2(velocityX, velocityY).nor();
-            Gdx.app.log("fling", String.valueOf(direction));
             status = Status.JUMP;
             return true;
         } else {
@@ -46,10 +45,8 @@ public class MyGestureListener implements GestureDetector.GestureListener {
         if (touchDuration > Constants.FLING_TIME) {
             status = Status.DRIVE;
             this.x = x;
-            return true;
-        } else {
-            return false;
         }
+        return true;
     }
 
     @Override
@@ -80,7 +77,6 @@ public class MyGestureListener implements GestureDetector.GestureListener {
             if (status != Status.JUMP)
                 status = Status.RELOCATE;
             if (touchDuration != 0f)
-                Gdx.app.log("a", String.valueOf(touchDuration));
             touchDuration = 0;
         }
     }
