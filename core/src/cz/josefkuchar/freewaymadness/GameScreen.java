@@ -12,7 +12,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import cz.josefkuchar.freewaymadness.Constants;
+import cz.josefkuchar.freewaymadness.scenes.Hud;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -29,6 +33,7 @@ public class GameScreen implements Screen {
     ArrayList<Car> cars;
     Player player;
     Random random;
+    private Hud hud;
 
     float lastCameraPosition;
     float positionBuffer = 0;
@@ -67,6 +72,8 @@ public class GameScreen implements Screen {
         font = new BitmapFont();
 
         random = new Random();
+
+        hud = new Hud(game.batch);
     }
 
     @Override
@@ -86,6 +93,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+
         // Update physics and HUD
         update();
 
@@ -111,11 +119,16 @@ public class GameScreen implements Screen {
         }
         game.batch.end();
 
+
         // Debug render
         debugRenderer.render(world, debugMatrix);
+
+        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        hud.stage.draw();
     }
 
     public void update() {
+
         game.gestureListener.update();
         positionBuffer += camera.position.y - lastCameraPosition;
         while (positionBuffer > 200) {
@@ -148,7 +161,7 @@ public class GameScreen implements Screen {
         if (game.gestureListener.x != -1)
             player.steer(game.gestureListener.x / Gdx.graphics.getWidth() * camera.viewportWidth / Constants.PIXELS_TO_METERS);
 
-        //camera.position.y = player.getCameraPosition();
+        camera.position.y = player.getCameraPosition();
 
         updateCam(0.2f, player.getCameraPosition());
     }
