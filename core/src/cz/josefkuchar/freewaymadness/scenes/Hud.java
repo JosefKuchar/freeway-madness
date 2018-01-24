@@ -14,7 +14,6 @@ import cz.josefkuchar.freewaymadness.Constants;
 public class Hud {
     public Stage stage;
     private Viewport viewport;
-    private int score;
 
     Label scoreLabel;
 
@@ -28,10 +27,18 @@ public class Hud {
         table.top();
         table.setFillParent(true);
 
-        scoreLabel = new Label(String.valueOf(score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        scoreLabel = new Label("0", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         table.add(scoreLabel).expandX();
 
         stage.addActor(table);
+    }
+
+    public void setScore(int score) {
+        scoreLabel.setText(String.valueOf(score));
+    }
+
+    public void dispose() {
+        stage.dispose();
     }
 }

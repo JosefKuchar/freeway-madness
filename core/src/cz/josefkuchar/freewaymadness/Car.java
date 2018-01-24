@@ -6,17 +6,17 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class Car {
-    Body body;
-    Sprite sprite;
+    public Body body;
+    public Sprite sprite;
     World world;
 
-    int health;
+    public int health;
     float maxSpeed;
     float maxSteerSpeed;
     float initalAngle;
-    boolean owned;
+    public boolean dead;
 
-    Car(World world, Sprite sprite, Vector2 position, float initalAngle) {
+    public Car(World world, Sprite sprite, Vector2 position, float initalAngle) {
         this.sprite = sprite;
         this.world = world;
 
@@ -74,11 +74,11 @@ public class Car {
 
         improveAngle();
 
-        if (health >= 0) {
-            sprite.setAlpha(health / 100f);
-        } else {
-            sprite.setAlpha(0);
+        if (health <= 0) {
+            dead = true;
         }
+
+        sprite.setAlpha(health / 100f);
     }
 
     private void improveAngle() {

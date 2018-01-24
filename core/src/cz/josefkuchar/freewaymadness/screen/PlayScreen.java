@@ -1,4 +1,4 @@
-package cz.josefkuchar.freewaymadness;
+package cz.josefkuchar.freewaymadness.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -9,19 +9,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import cz.josefkuchar.freewaymadness.Constants;
+import cz.josefkuchar.freewaymadness.*;
 import cz.josefkuchar.freewaymadness.scenes.Hud;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class GameScreen implements Screen {
+public class PlayScreen implements Screen {
     final FreewayMadness game;
     OrthographicCamera camera;
     Texture background;
@@ -42,7 +38,7 @@ public class GameScreen implements Screen {
 
     final int[] spawnPoints = {7, 26, 45, 67, 86, 105};
 
-    public GameScreen(FreewayMadness game) {
+    public PlayScreen(FreewayMadness game) {
         this.game = game;
 
         camera = new OrthographicCamera();
@@ -93,7 +89,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
         // Update physics and HUD
         update();
 
@@ -102,7 +97,6 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Update camera
-        camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
         // Debug matrix init
@@ -128,7 +122,7 @@ public class GameScreen implements Screen {
     }
 
     public void update() {
-
+        camera.update();
         game.gestureListener.update();
         positionBuffer += camera.position.y - lastCameraPosition;
         while (positionBuffer > 200) {
@@ -150,7 +144,7 @@ public class GameScreen implements Screen {
             Car car = cars.get(i);
             car.update();
             Gdx.app.log(String.valueOf(i), String.valueOf(car.health));
-            if (car.sprite.getY() + car.sprite.getHeight() < camera.position.y - camera.viewportHeight / 2) {
+            if (car.sprite.getY() + car.sprite.getHeight() < camera.position.y - camera.viewportHeight / 2 || car.dead) {
                 car.dispose();
                 cars.remove(i);
             }
@@ -191,6 +185,7 @@ public class GameScreen implements Screen {
         background.dispose();
         world.dispose();
         debugRenderer.dispose();
+        hud.dispose();
     }
 
     public int closest(int n, int m) {

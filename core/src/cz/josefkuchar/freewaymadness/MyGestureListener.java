@@ -6,10 +6,10 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 
 public class MyGestureListener implements GestureDetector.GestureListener {
-    float x;
+    public float x;
     float touchDuration;
     Vector2 direction;
-    Status status;
+    public Status status;
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {

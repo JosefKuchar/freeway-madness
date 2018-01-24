@@ -23,7 +23,6 @@ public class MyContactListener implements ContactListener {
             }
 
             player.setCar(car);
-
         }
     }
 

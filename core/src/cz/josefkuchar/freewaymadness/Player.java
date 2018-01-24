@@ -4,13 +4,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class Player {
-    Car car;
+    public Car car;
     World world;
     Body body;
     FreewayMadness game;
     Sprite sprite;
 
-    Player(Car car, World world, FreewayMadness game) {
+    public Player(Car car, World world, FreewayMadness game) {
         this.world = world;
         this.game = game;
 
