@@ -3,8 +3,6 @@ package cz.josefkuchar.freewaymadness.screen;
 import com.badlogic.gdx.Screen;
 
 public class MenuScreen implements Screen {
-
-
     @Override
     public void show() {
 

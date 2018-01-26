@@ -93,6 +93,11 @@ public class PlayScreen implements Screen {
         // Update physics and HUD
         update();
 
+        if (player.isDead()) {
+            endGame();
+            return;
+        }
+
         // Clear screen
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -180,12 +185,20 @@ public class PlayScreen implements Screen {
 
     }
 
+    public void endGame() {
+        game.setScreen(new EndScreen(game));
+        Gdx.app.log("dispose", "dispose");
+        dispose();
+    }
+
     @Override
     public void dispose() {
         background.dispose();
-        world.dispose();
+        texture.dispose();
         debugRenderer.dispose();
         hud.dispose();
+        //FIXME: Dispose world
+        world.dispose();
     }
 
     public int closest(int n, int m) {

@@ -9,7 +9,7 @@ public class Player {
     Body body;
     FreewayMadness game;
     Sprite sprite;
-    boolean dead;
+    private boolean dead;
 
     public Player(Car car, World world, FreewayMadness game) {
         this.world = world;
@@ -63,5 +63,9 @@ public class Player {
     public void steer(float x) {
         //car.body.setTransform(x, car.body.getPosition().y, 0);
         car.steer(x);
+    }
+
+    public boolean isDead() {
+        return dead;
     }
 }
