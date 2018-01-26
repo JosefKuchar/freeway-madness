@@ -25,7 +25,6 @@ public class PlayScreen implements Screen {
     World world;
     Box2DDebugRenderer debugRenderer;
     Matrix4 debugMatrix;
-    BitmapFont font;
     ArrayList<Car> cars;
     Player player;
     Random random;
@@ -41,6 +40,8 @@ public class PlayScreen implements Screen {
     public PlayScreen(FreewayMadness game) {
         this.game = game;
 
+        loadTexturea();
+
         camera = new OrthographicCamera();
 
         float w = Gdx.graphics.getWidth();
@@ -50,9 +51,6 @@ public class PlayScreen implements Screen {
 
         world = new World(new Vector2(0, 0), true);
         world.setContactListener(new MyContactListener());
-
-        texture = new Texture(Gdx.files.internal("car.png"));
-        background = new Texture(Gdx.files.internal("road.png"));
 
         cars = new ArrayList<Car>();
 
@@ -65,8 +63,6 @@ public class PlayScreen implements Screen {
 
         debugRenderer = new Box2DDebugRenderer();
 
-        font = new BitmapFont();
-
         random = new Random();
 
         hud = new Hud(game.batch);
@@ -75,6 +71,11 @@ public class PlayScreen implements Screen {
     @Override
     public void show() {
 
+    }
+
+    private void loadTexturea() {
+        texture = new Texture(Gdx.files.internal("car.png"));
+        background = new Texture(Gdx.files.internal("road.png"));
     }
 
     public void updateCam(float delta, float target) {
@@ -104,7 +105,7 @@ public class PlayScreen implements Screen {
 
         // Draw scene
         game.batch.begin();
-        for (int i = closest((int)(camera.position.y - camera.viewportHeight / 2), Constants.TILE_HEIGHT); i < camera.viewportHeight / 2 + camera.position.y; i += Constants.TILE_HEIGHT) {
+        for (int i = closest((int)(camera.position.y - camera.viewportHeight / 2) - Constants.TILE_HEIGHT, Constants.TILE_HEIGHT); i < camera.viewportHeight / 2 + camera.position.y; i += Constants.TILE_HEIGHT) {
             game.batch.draw(background, 0, i);
         }
 
@@ -143,7 +144,6 @@ public class PlayScreen implements Screen {
         for (int i = cars.size() - 1; i >= 0; i--) {
             Car car = cars.get(i);
             car.update();
-            Gdx.app.log(String.valueOf(i), String.valueOf(car.health));
             if (car.sprite.getY() + car.sprite.getHeight() < camera.position.y - camera.viewportHeight / 2 || car.dead) {
                 car.dispose();
                 cars.remove(i);

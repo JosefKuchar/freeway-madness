@@ -18,8 +18,7 @@ public class Hud {
     Label scoreLabel;
 
     public Hud(SpriteBatch batch) {
-        //viewport = new FitViewport(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_WIDTH * (16 / 9), new OrthographicCamera());
-        viewport = new FitViewport(1080 / 4, 1920 / 4, new OrthographicCamera());
+        viewport = new FitViewport(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_WIDTH * (16f / 9f), new OrthographicCamera());
 
         stage = new Stage(viewport, batch);
 
@@ -29,7 +28,7 @@ public class Hud {
 
         scoreLabel = new Label("0", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
-        table.add(scoreLabel).expandX();
+        table.add(scoreLabel).expandX().padTop(4);
 
         stage.addActor(table);
     }

@@ -9,6 +9,7 @@ public class Player {
     Body body;
     FreewayMadness game;
     Sprite sprite;
+    boolean dead;
 
     public Player(Car car, World world, FreewayMadness game) {
         this.world = world;
@@ -42,6 +43,10 @@ public class Player {
     }
 
     public void update() {
+        if (car.dead) {
+            dead = true;
+        }
+
         if (game.gestureListener.status != Status.JUMP) {
             body.setTransform(car.body.getPosition(), 0);
             body.setLinearVelocity(car.body.getLinearVelocity());
